@@ -2,6 +2,7 @@
 
 ## 2026-10-02 — Primeira versão funcional
 
+- Primeiro CI: imagem Docker compilada; o smoke no runner falhou por Python anterior a 3.14 e sintaxe de exceções. Corrigido fixando Python 3.14 também no job de container; evidência final no Actions.
 - Aplicação de portfólio service-desk com API Python, React, SQLite, dados sintéticos e documentação de requisitos.
 - Testes das regras, integração HTTP, persistência e fluxos de navegador.
 - Container com usuário sem privilégios e CI para testes, build e verificação HTTP da imagem.
