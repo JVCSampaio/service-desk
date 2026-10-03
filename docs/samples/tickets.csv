@@ -1,0 +1,7 @@
+﻿id,title,requester,category,priority,status,assignee,created_at,resolved_at,due_at,overdue,sla_met
+1,Integração de pedidos indisponível,Comercial,Aplicações,urgent,in_progress,Equipe Aplicações,2026-10-02T18:53:13+00:00,,2026-10-02T22:53:13+00:00,True,
+2,Permissão para relatório de compras,Compras,Acessos,normal,open,,2026-10-02T22:53:13+00:00,,2026-10-03T22:53:13+00:00,False,
+3,Divergência no total de vendas,Financeiro,Dados,high,open,,2026-10-02T21:53:13+00:00,,2026-10-03T05:53:13+00:00,False,
+4,Impressora sem conexão,Operações,Infraestrutura,low,in_progress,Equipe Infraestrutura,2026-10-02T14:53:13+00:00,,2026-10-04T14:53:13+00:00,False,
+5,Atualizar exportação CSV,Financeiro,Aplicações,normal,resolved,Equipe Aplicações,2026-10-02T09:53:13+00:00,2026-10-03T00:53:13+00:00,2026-10-03T09:53:13+00:00,False,True
+6,Revisar formulário de cadastro,Comercial,Aplicações,normal,open,,2026-10-02T23:53:13+00:00,,2026-10-03T23:53:13+00:00,False,
