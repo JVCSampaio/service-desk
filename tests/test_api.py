@@ -91,6 +91,36 @@ def test_optimistic_version_blocks_lost_update(client):
     assert len(detail["events"]) == 2
 
 
+def test_saving_same_values_keeps_version_and_history(client):
+    # Issue #5: salvar sem mudar nada criava versão nova e conflito falso para outro atendente.
+    ticket = create(client)
+    url = f"/api/tickets/{ticket['id']}"
+    client.patch(url, json={"version": 1, "assignee": "Equipe Dados"})
+    same = client.patch(url, json={"version": 2, "assignee": "Equipe Dados", "priority": "normal"})
+    assert same.status_code == 200
+    assert same.json()["version"] == 2
+    assert client.patch(url, json={"version": 2, "priority": "high"}).status_code == 200
+    assert [e["kind"] for e in client.get(url).json()["events"]] == ["created", "updated", "updated"]
+
+
+def test_history_uses_interface_labels(client):
+    # Issue #4: o histórico mostrava códigos internos (open → in_progress, prioridade: high).
+    ticket = create(client, priority="high")
+    url = f"/api/tickets/{ticket['id']}"
+    client.patch(url, json={"version": 1, "assignee": "Equipe Dados"})
+    client.post(url + "/transitions", json={"version": 2, "status": "in_progress"})
+    client.post(
+        url + "/transitions",
+        json={"version": 3, "status": "resolved", "note": "Ajuste aplicado e validado."},
+    )
+    notes = [e["note"] for e in client.get(url).json()["events"]]
+    assert notes[1:] == [
+        "Equipe: Equipe Dados; prioridade: Alta.",
+        "Aberto → Em atendimento.",
+        "Em atendimento → Resolvido. Ajuste aplicado e validado.",
+    ]
+
+
 def test_resolution_requires_detail_and_team_cannot_be_removed(client):
     ticket = create(client)
     url = f"/api/tickets/{ticket['id']}"

@@ -12,7 +12,16 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from .contracts import MetricsView, TicketDetail, TicketList, TicketView
 from .db import connection, initialize
-from .domain import Priority, Status, check_transition, enrich, safe_cell, utc_now
+from .domain import (
+    PRIORITY_LABELS,
+    STATUS_LABELS,
+    Priority,
+    Status,
+    check_transition,
+    enrich,
+    safe_cell,
+    utc_now,
+)
 
 Category = Literal["Aplicações", "Infraestrutura", "Acessos", "Dados"]
 Team = Literal["", "Equipe Aplicações", "Equipe Infraestrutura", "Equipe Dados"]
@@ -151,12 +160,19 @@ def create_app(db_path=None, seed=True):
             if row["status"] == "in_progress" and not assignee:
                 raise HTTPException(409, "Um chamado em atendimento precisa ter equipe atribuída.")
             priority = changes.get("priority", row["priority"])
+            # Salvar os mesmos valores não é alteração: sem nova versão, que geraria conflito
+            # falso para outro atendente, nem evento repetido no histórico.
+            if (assignee, priority) == (row["assignee"], row["priority"]):
+                return enrich(row)
             db.execute(
                 "UPDATE tickets SET assignee=?,priority=?,version=version+1,updated_at=? WHERE id=?",
                 (assignee, priority, utc_now(), ticket_id),
             )
             add_event(
-                db, ticket_id, "updated", f"Equipe: {assignee or 'Não atribuída'}; prioridade: {priority}."
+                db,
+                ticket_id,
+                "updated",
+                f"Equipe: {assignee or 'Não atribuída'}; prioridade: {PRIORITY_LABELS[priority]}.",
             )
             result = enrich(find(db, ticket_id))
         return result
@@ -176,7 +192,8 @@ def create_app(db_path=None, seed=True):
                 "UPDATE tickets SET status=?,resolved_at=?,version=version+1,updated_at=? WHERE id=?",
                 (body.status, resolved_at, utc_now(), ticket_id),
             )
-            add_event(db, ticket_id, "transition", f"{row['status']} → {body.status}. {body.note}")
+            change = f"{STATUS_LABELS[row['status']]} → {STATUS_LABELS[body.status]}."
+            add_event(db, ticket_id, "transition", f"{change} {body.note}" if body.note else change)
             result = enrich(find(db, ticket_id))
         return result
 

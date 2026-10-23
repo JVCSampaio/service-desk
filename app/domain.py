@@ -18,6 +18,9 @@ class Priority(StrEnum):
 
 
 SLA_HOURS = {"low": 48, "normal": 24, "high": 8, "urgent": 4}
+# Rótulos exibidos na interface; o histórico usa os mesmos nomes.
+STATUS_LABELS = {"open": "Aberto", "in_progress": "Em atendimento", "resolved": "Resolvido"}
+PRIORITY_LABELS = {"low": "Baixa", "normal": "Normal", "high": "Alta", "urgent": "Urgente"}
 TRANSITIONS = {"open": {"in_progress"}, "in_progress": {"resolved"}, "resolved": {"in_progress"}}
 
 

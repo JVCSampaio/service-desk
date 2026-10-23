@@ -112,8 +112,12 @@ npm run test:e2e
 ```
 
 Os testes de API cobrem fluxo completo, versões desatualizadas, rollback, filtros, CSV, prazos e persistência.
-Os testes Playwright usam a API e o banco reais: criação, atribuição, resolução, reload e uma tela de 390 px.
+Os testes Playwright usam a API e o banco reais: criação, atribuição, resolução, reload e uma tela de 390 px,
+além das regressões dos defeitos [#1 a #6](https://github.com/JVCSampaio/service-desk/issues?q=is%3Aissue+label%3Abug).
 Eles usam `.data/e2e.db`, separado do banco de uso local. O CI também constrói e verifica o container.
+
+Uma suíte de QA independente testa esta aplicação de fora: [ServiceDesk QA](https://github.com/JVCSampaio/service-desk-qa),
+com cenários BDD em Cypress e contrato da API. Os seis defeitos acima foram encontrados por ela.
 
 ## Estrutura e limites
 

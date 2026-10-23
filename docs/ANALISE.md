@@ -10,7 +10,7 @@ Objetivo: registrar contexto, distribuir atendimento e manter informação sufic
 | RF01 | Registrar demanda | Campos inválidos não criam chamado; criação válida gera evento. | `test_validation_and_not_found`, teste E2E de criação |
 | RF02 | Atribuir atendimento | Não é possível iniciar sem equipe ou remover a equipe em atendimento. | `test_invalid_transition_and_missing_team_are_atomic`, `test_resolution_requires_detail_and_team_cannot_be_removed` |
 | RF03 | Registrar solução | Solução exige 10 caracteres; reabertura preserva histórico e prazo-base. | `test_ticket_lifecycle_and_history` |
-| RF04 | Evitar sobrescrita | Duas versões antigas não substituem uma alteração mais recente. | `test_optimistic_version_blocks_lost_update` |
+| RF04 | Evitar sobrescrita | Duas versões antigas não substituem uma alteração mais recente; salvar sem mudanças não cria versão nova. | `test_optimistic_version_blocks_lost_update`, `test_saving_same_values_keeps_version_and_history` |
 | RF05 | Consultar fila | Busca trata `%` como caractere, filtros e página respeitam o limite. | `test_filters_pagination_and_literal_search` |
 | RF06 | Exportar informações | CSV inclui prazo/status, sem executar texto como fórmula. | `test_csv_protects_spreadsheet_formulas` |
 | RNF01 | Persistência | Reiniciar não apaga tickets nem repete a carga inicial. | `test_restart_preserves_tickets_and_seed_is_not_repeated` |
