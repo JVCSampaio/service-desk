@@ -1,14 +1,15 @@
 # Evidências de verificação
 
-Verificação local em 02/10/2026, Windows, Python 3.14 e Node.js 24.
+Verificação local em 23/10/2026, Windows, Python 3.14 e Node.js 24, depois das correções das issues #1 a #6.
 
 | Verificação | Resultado |
 |---|---|
-| Pytest: integração HTTP e regras | 10 cenários passaram. |
-| Ruff: análise e formatação | Sem erros após correção dos imports e contextos de teste. |
+| Pytest: integração HTTP e regras | 12 cenários passaram. |
+| Ruff: análise e formatação | Sem erros. |
 | TypeScript e Prettier | Verificação passou. |
 | Build React | Compilação de produção passou. |
-| Playwright com API real | 2 fluxos passaram: ciclo de atendimento e validação/layout de 390 px. |
+| Playwright com API real | 6 testes passaram: ciclo de atendimento, validação/layout de 390 px e 4 regressões das issues. |
+| Suíte de QA externa ([service-desk-qa](https://github.com/JVCSampaio/service-desk-qa)) | 59 cenários Cypress passaram, incluindo os 6 que reproduziam os defeitos. |
 | Aplicação compilada servida pela API | Página, health, OpenAPI, seed e CSV verificados por `scripts/smoke.py`. |
 | Capturas de tela | `overview.png` e `mobile.png`, obtidas da aplicação compilada. |
 

@@ -59,6 +59,8 @@ export default function App() {
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  // Falha ao carregar a fila: separada dos erros das ações e limpa quando a fila volta a carregar.
+  const [listError, setListError] = useState('')
   const [notice, setNotice] = useState('')
   const reload = () => setRefresh((n) => n + 1)
 
@@ -77,10 +79,11 @@ export default function App() {
           setTickets(list.items)
           setTotal(list.total)
           setMetrics(m)
+          setListError('')
         }
       })
       .catch((e) => {
-        if (active) setError(e.message)
+        if (active) setListError(e.message)
       })
       .finally(() => {
         if (active) setLoading(false)
@@ -201,12 +204,13 @@ export default function App() {
               {newTicket ? 'Cancelar cadastro' : '+ Novo chamado'}
             </button>
           </div>
-          {error && (
+          {(error || listError) && (
             <div className="alert error" role="alert">
-              {error}
+              {error || listError}
               <button
                 onClick={() => {
                   setError('')
+                  setListError('')
                   reload()
                 }}
               >
@@ -327,6 +331,7 @@ export default function App() {
                   <span className="sr-only">Buscar chamados</span>
                   <input
                     placeholder="Buscar título ou solicitante…"
+                    maxLength={120}
                     value={query}
                     onChange={(e) => {
                       setQuery(e.target.value)
@@ -367,6 +372,8 @@ export default function App() {
               </div>
               {loading ? (
                 <div className="empty">Carregando chamados…</div>
+              ) : listError ? (
+                <div className="empty">Não foi possível carregar a fila.</div>
               ) : tickets.length === 0 ? (
                 <div className="empty">
                   Nenhum chamado encontrado. Ajuste os filtros ou registre uma nova demanda.
@@ -501,7 +508,9 @@ export default function App() {
                       {ticket.status !== 'resolved' && (
                         <button
                           className="secondary"
-                          disabled={busy}
+                          disabled={
+                            busy || (team === ticket.assignee && editPriority === ticket.priority)
+                          }
                           onClick={() =>
                             mutate(
                               `/tickets/${ticket.id}`,
