@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
+import { ArrowsClockwise, BookOpenText, DownloadSimple, Kanban, Tray } from '@phosphor-icons/react'
 import { api, dateTime } from './api'
 
 type Status = 'open' | 'in_progress' | 'resolved'
@@ -160,21 +161,27 @@ export default function App() {
     <div className="workspace">
       <aside className="sidebar">
         <a className="brand" href="/" aria-label="ServiceDesk início">
-          <span className="brand-icon">S</span>
+          <span className="brand-icon" aria-hidden="true">
+            S
+          </span>
           <span>
-            ServiceDesk<small>OPERAÇÕES DE TI</small>
+            ServiceDesk<small>Operações de TI</small>
           </span>
         </a>
-        <div className="nav-label">WORKSPACE</div>
-        <div className="nav-item active">
-          <span>◫</span> Central de chamados
-        </div>
-        <a className="nav-item" href="/api/export/tickets.csv">
-          <span>↓</span> Exportar chamados
-        </a>
-        <a className="nav-item" href="/docs" target="_blank" rel="noreferrer">
-          <span>⌘</span> Documentação da API
-        </a>
+        <nav className="nav" aria-label="Seções">
+          {/* no celular o rótulo vira só leitura de tela e fica o ícone, na linha da marca */}
+          <div className="nav-item active" aria-current="page">
+            <Kanban aria-hidden="true" /> <span className="nav-label">Central de chamados</span>
+          </div>
+          <a className="nav-item" href="/api/export/tickets.csv">
+            <DownloadSimple aria-hidden="true" />{' '}
+            <span className="nav-label">Exportar chamados</span>
+          </a>
+          <a className="nav-item" href="/docs" target="_blank" rel="noreferrer">
+            <BookOpenText aria-hidden="true" />{' '}
+            <span className="nav-label">Documentação da API</span>
+          </a>
+        </nav>
         <div className="sidebar-foot">
           <span className="avatar">JS</span>
           <div>
@@ -193,13 +200,7 @@ export default function App() {
         </header>
         <main>
           <div className="page-heading">
-            <div>
-              <p className="eyebrow">CENTRAL DE SERVIÇOS</p>
-              <h1>Atendimento com contexto.</h1>
-              <p className="muted">
-                Organize a demanda, acompanhe os prazos e registre cada solução.
-              </p>
-            </div>
+            <h1>Central de chamados</h1>
             <button className="primary" onClick={() => setNewTicket(!newTicket)}>
               {newTicket ? 'Cancelar cadastro' : '+ Novo chamado'}
             </button>
@@ -225,23 +226,23 @@ export default function App() {
           )}
           <div className="metrics">
             <Metric
-              label="CHAMADOS ATIVOS"
+              label="Chamados ativos"
               value={metrics?.active}
               hint="Abertos e em atendimento"
             />
             <Metric
-              label="PRAZOS VENCIDOS"
+              label="Prazos vencidos"
               value={metrics?.overdue}
               hint="Prazo corrido por prioridade"
               warning
             />
             <Metric
-              label="PRIORIDADE URGENTE"
+              label="Prioridade urgente"
               value={metrics?.urgent}
               hint="Prazo de atendimento: 4 horas"
             />
             <Metric
-              label="RESOLVIDOS"
+              label="Resolvidos"
               value={metrics?.resolved}
               hint={
                 metrics?.sla_rate == null
@@ -323,7 +324,7 @@ export default function App() {
                   <span>{total} chamado(s) no filtro</span>
                 </div>
                 <button className="ghost" onClick={reload} aria-label="Atualizar fila">
-                  ↻ Atualizar
+                  <ArrowsClockwise aria-hidden="true" /> Atualizar
                 </button>
               </div>
               <div className="filters">
@@ -432,22 +433,17 @@ export default function App() {
             <section className="panel detail" aria-label="Detalhes do chamado">
               {!ticket ? (
                 <div className="detail-placeholder">
-                  <span className="placeholder-icon">◎</span>
-                  <h2>
-                    {selected === null ? 'Cada demanda tem uma história.' : 'Carregando detalhes…'}
-                  </h2>
+                  <Tray className="placeholder-icon" aria-hidden="true" />
+                  <h2>{selected === null ? 'Nenhum chamado aberto' : 'Carregando detalhes…'}</h2>
                   <p>
-                    Selecione um chamado para ver o contexto, atribuir uma equipe e acompanhar o
-                    histórico.
+                    Selecione um chamado na fila para ver o contexto, atribuir uma equipe e
+                    acompanhar o histórico.
                   </p>
-                  <div className="workflow-mini">
-                    Aberto <span>→</span> Em atendimento <span>→</span> Resolvido
-                  </div>
                 </div>
               ) : (
                 <>
                   <div className="panel-heading">
-                    <span className="eyebrow">CHAMADO #{ticket.id}</span>
+                    <span className="ticket-ref">Chamado #{ticket.id}</span>
                     <span className={`badge ${ticket.priority}`}>
                       {priorities[ticket.priority]}
                     </span>

@@ -11,6 +11,7 @@
     "format": "prettier --write src e2e vite.config.ts playwright.config.ts"
   },
   "dependencies": {
+    "@phosphor-icons/react": "2.1.10",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
